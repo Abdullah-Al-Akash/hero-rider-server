@@ -29,7 +29,6 @@ async function run() {
                         const query = {};
                         const cursor = memberCollection.find(query);
                         const members = await cursor.toArray();
-                        console.log(members)
                         res.send(members);
                 })
 
@@ -49,6 +48,54 @@ async function run() {
                                 res.send({ success: false })
                         }
                 })
+                //Single Member Load By ID:
+                app.get('/member/:id', async (req, res) => {
+                        const id = req.params.id;
+                        const query = { _id: new ObjectId(id) };
+                        const product = await memberCollection.findOne(query);
+                        res.json(product);
+                });
+                //Single Member Load By ID:
+                app.get('/block/:id', async (req, res) => {
+                        const id = req.params.id;
+                        const query = { _id: new ObjectId(id) };
+                        const product = await memberCollection.findOne(query);
+                        res.json(product);
+                });
+
+                // Update Status:
+                app.put('/member/:id', async (req, res) => {
+                        const id = req.params.id;
+                        const updateStatus = req.body;
+                        console.log(updateStatus.body);
+                        const filter = { _id: new ObjectId(id) }
+                        const options = { upsert: true };
+                        // create a document that sets the plot of the movie
+                        const updateDoc = {
+                                $set: {
+                                        status: 'active'
+                                },
+                        };
+                        const result = await memberCollection.updateOne(filter, updateDoc, options);
+                        res.json(result)
+                });
+
+                // Block Someone:
+                app.put('/block/:id', async (req, res) => {
+                        const id = req.params.id;
+                        const updateStatus = req.body;
+                        console.log(updateStatus.body);
+                        const filter = { _id: new ObjectId(id) }
+                        const options = { upsert: true };
+                        // create a document that sets the plot of the movie
+                        const updateDoc = {
+                                $set: {
+                                        status: 'block'
+                                },
+                        };
+                        const result = await memberCollection.updateOne(filter, updateDoc, options);
+                        res.json(result)
+                });
         }
         finally {
 
